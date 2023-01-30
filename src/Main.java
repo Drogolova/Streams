@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -25,9 +26,14 @@ public class Main {
         list.add(6);
 
         Stream<Integer> stream = list.stream();
-        Comparator order = Comparator.naturalOrder();
-        BiConsumer minMaxConsumer = (o, o2) -> System.out.println("min: " + o + ", max: " + o2);
+        Comparator<Integer> order = Comparator.naturalOrder();
+        BiConsumer<Object, Object> minMaxConsumer = (o, o2) -> System.out.println("min: " + o + ", max: " + o2);
         findMinMax(stream,order, minMaxConsumer);
+
+        Stream<Integer> stream2 = Stream.empty();
+        findMinMax(stream2, order, minMaxConsumer);
+
+
 
         System.out.println("Задание 2");
         Stream<Integer> stream1 = Stream.of(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
@@ -38,9 +44,13 @@ public class Main {
                                         BiConsumer<? super T, ? super T> minMaxConsumer) {
         List<? extends T> collect = stream.sorted(order)
                 .collect(Collectors.toList());
-        T min = collect.get(0);
-        T max = collect.get(collect.size() - 1);
-        minMaxConsumer.accept(min, max);
+        if(collect.isEmpty()) {
+            minMaxConsumer.accept(null,null);
+        } else {
+            T min = collect.get(0);
+            T max = collect.get(collect.size() - 1);
+            minMaxConsumer.accept(min, max);
+        }
     }
 
     public static <T> void countPositiveNumberAmount(Stream<Integer> stream) {
